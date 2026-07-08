@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#q9zdy5o+th9c)try-lwxit0ucep-=)rd)zw*ueh42!jh5je7q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["promptshub.pythonanywhere.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
