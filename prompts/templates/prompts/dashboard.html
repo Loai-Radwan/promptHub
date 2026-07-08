@@ -1,0 +1,157 @@
+{% extends "prompts/layout.html" %}
+
+
+{% block title %}PromptHub {% endblock %}
+
+
+{%block main %}
+
+<!-- Welcome -->
+<section class="mb-5">
+    <div class="bg-white border rounded-4 shadow-sm p-4 p-md-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <h1 class="fw-bold mb-2">Welcome back, {{ user.username }}</h1>
+                <p class="text-muted mb-0">
+                    Manage your prompts and collections from one
+                    place.
+                </p>
+            </div>
+
+            <a href="{% url 'create_prompt' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create Prompt
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="mb-5">
+    <div class="row g-4">
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">My Prompts</small>
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{user.prompts.count}}">0</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">Total Views</small>
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{user.total_views}}">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">Total Copies</small>
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{user.total_copies}}">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="mb-5">
+    <h3 class="fw-bold mb-3">Quick Actions</h3>
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <a href="{% url 'create_prompt' %}" class="btn btn-primary w-100 p-3">
+                <i class="bi bi-plus-lg me-2"></i>
+                New Prompt
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="{% url 'browse' %}" class="btn btn-outline-primary w-100 p-3">
+                <i class="bi bi-search me-2"></i>
+                Browse
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Recent Prompts + Activity -->
+<section class="mb-5">
+    <div class="row g-4">
+        <!-- Recent Prompts -->
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 p-4">
+                <h4 class="fw-bold mb-0">Recent Prompts</h4>
+            </div>
+            {% if user.prompts.count > 0 %}
+
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Prompt</th>
+                            <th>Visibility</th>
+                            <th>Views</th>
+                            <th>Copies</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for prompt in user.prompts.all|slice:":4" %}
+                        <tr>
+                            <td>
+                                <strong>{{prompt.title}}</strong>
+                                <br />
+                                <small class="text-muted">{{prompt.category}}</small>
+                            </td>
+
+                            <td>
+                                <span
+                                    class="badge {% if prompt.visibility == 'public' %} bg-success {% else %} bg-secondary {% endif %}">
+                                    {{prompt.get_visibility_display }}</span>
+                            </td>
+                            <td>{{prompt.views}}</td>
+                            <td>{{prompt.copies}}</td>
+                            <td>
+                                <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="col-12 ">
+                <div class="text-center    p-5">
+                    <i class="bi bi-journal-x display-4 text-muted"></i>
+                    <h4 class="fw-bold mt-3">You did not create any prompts yet</h4>
+
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Collections -->
+
+{% endblock %}
+
+{% block script %}
+<script>
+    document.querySelectorAll(".statistics").forEach(statistic => {
+        startCount(statistic)
+    })
+</script>
+
+{% endblock %}

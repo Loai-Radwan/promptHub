@@ -1,0 +1,156 @@
+{% extends "prompts/layout.html" %} {% block title %} {{ prompt.title }}
+{%endblock %} {% block main %}
+
+<div class="row g-4">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-primary mb-2"> {{ prompt.category }} </span>
+
+                        <h1 class="fw-bold">{{ prompt.title }}</h1>
+                    </div>
+
+                    {% if request.user == prompt.author %}
+                    <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i>
+                        Edit
+                    </a>
+                    {% endif %}
+                </div>
+
+                <p class="lead text-muted">{{ prompt.description }}</p>
+
+                <hr />
+
+                <h5 class="fw-bold mb-3">Prompt</h5>
+
+                <div class="bg-light rounded-3 p-4" id="prompt-{{prompt.id}}">
+                    <!-- <pre class="mb-0" style="white-space: pre-wrap"> -->
+                    {{ content|safe }}
+                    <!-- </pre> -->
+                </div>
+
+                <div class="mt-4 d-flex gap-2 ">
+                    <button class="btn btn-primary " id="copy-{{prompt.id}}">
+                        <i class="bi bi-clipboard me-2"></i>
+                        Copy Prompt
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Sidebar -->
+
+    <div class="col-lg-4">
+        <!-- Author -->
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body text-center">
+                <img src="{{ prompt.author.avatar.url }}" class="rounded-circle mb-3" width="90" height="90" />
+
+                <h5>{{ prompt.author.username }}</h5>
+
+                <p class="text-muted">{{ prompt.author.bio }}</p>
+
+                <a href="{% url 'user' prompt.author.username %}" class="btn btn-outline-primary w-100">
+                    View Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Statistics</h5>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Views</span>
+
+                    <strong class="statistics" data-goal="{{ prompt.views }}" >0</strong>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Copies</span>
+
+                    <strong class="statistics" data-goal="{{ prompt.copies }}"  id="copies">0</strong>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <span>Created</span>
+
+                    <strong >{{ prompt.created_at|date:"M d, Y" }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Details</h5>
+
+                <p>
+                    <strong>Category:</strong>
+
+                    {{ prompt.category }}
+                </p>
+
+                <p>
+                    <strong>Visibility:</strong>
+
+                    {{ prompt.visibility|title }}
+                </p>
+
+                <p class="mb-0">
+                    <strong>Updated:</strong>
+
+                    {{ prompt.updated_at|date:"M d, Y" }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script%}
+<script>
+    document.querySelectorAll(".statistics").forEach(statistic => {
+        startCount(statistic)
+    })
+
+    document.querySelector(`#copy-{{prompt.id}}`).addEventListener('click', event => {
+        const content = document.querySelector(`#prompt-{{prompt.id}}`).innerText
+        navigator.clipboard.writeText(content);
+        let old = event.target.innerHTML;
+
+        event.target.innerHTML = `<i class="bi bi-check-lg"></i> Copied`
+        fetch(`/prompt/{{prompt.id}}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                copies: parseInt(`{{ prompt.copies }}`) + 1,
+            })
+        });
+        document.querySelector('#copies').innerHTML = parseInt(`{{ prompt.copies }}`) + 1
+
+
+        setTimeout(() => {
+            event.target.innerHTML = old
+        }, 1500)
+
+
+    });
+</script>
+{% endblock %}

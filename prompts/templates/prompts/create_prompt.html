@@ -1,0 +1,149 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %}Create Prompt{% endblock %}
+
+{% block main %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-9">
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4 p-md-5">
+
+                <div class="mb-5">
+
+                    <h1 class="fw-bold mb-2">
+                        Create a New Prompt
+                    </h1>
+
+                    <p class="text-muted mb-0">
+                        Share your best AI prompts with the PromptHub community.
+                    </p>
+
+                </div>
+
+                <form action="{% url 'create_prompt' %}" method="POST">
+
+                    {% csrf_token %}
+
+                    <!-- Title -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Title
+                        </label>
+
+                        {{ form.title }}
+
+                        <div class="form-text">
+                            Choose a clear and descriptive title.
+                        </div>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        {{ form.description }}
+
+                        <div class="form-text">
+                            A short summary explaining what the prompt does.
+                        </div>
+
+                    </div>
+
+                    <!-- Category + Visibility -->
+                    <div class="row">
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Category
+                            </label>
+
+                            {{ form.category }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Visibility
+                            </label>
+
+                            {{ form.visibility }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Prompt Content
+                        </label>
+
+                        {{ form.content }}
+
+                        <div class="form-text">
+                            Write the complete prompt exactly as you want others to use it.
+                        </div>
+
+                    </div>
+
+                    <!-- Tips -->
+                    <div class="alert alert-info">
+
+                        <h6 class="fw-bold">
+                            Tips for a great prompt
+                        </h6>
+
+                        <ul class="mb-0">
+
+                            <li>Clearly define the AI's role.</li>
+
+                            <li>Explain the desired output.</li>
+
+                            <li>Include formatting instructions.</li>
+
+                            <li>Add examples if necessary.</li>
+
+                        </ul>
+
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+
+                            <i class="bi bi-cloud-upload me-2"></i>
+
+                            Publish Prompt
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

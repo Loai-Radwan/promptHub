@@ -1,0 +1,228 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %}{{ profile_user.username }} {% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block main %}
+
+<section class="mb-5">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            <div class="row align-items-center g-4">
+
+
+
+                {% if request.user == profile_user %}
+                <form class="col-md-auto text-center" action="{% url 'upload_profile_picture' %}" method="post"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="profile-picture-container text-center mb-4 "
+                        onclick="document.getElementById('profile_picture').click()">
+
+                        <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}"
+                            enctype="multipart/form-data" class="profile-picture rounded-circle mb-3 border" width="120"
+                            height="120" style="object-fit: cover;">
+                        <input type="file" id="profile_picture" name="profile_picture" accept=".jpg,.jpeg,.png,.webp"
+                            onchange="this.form.submit()" hidden>
+
+                        <div class="profile-overlay">
+                            <i class="bi bi-pencil-fill"></i>
+                            <span>Edit</span>
+                        </div>
+
+                    </div>
+                </form>
+                {% else %}
+                <div class="col-md-auto text-center">
+                    <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}"
+                        class="rounded-circle border shadow-sm" width="120" height="120" style="object-fit: cover;">
+                </div>
+                {% endif %}
+                <div class="col-md">
+                    <h1 class="fw-bold mb-1">
+                        {{ profile_user.username }}
+                    </h1>
+
+                    <p class="text-muted mb-3">
+                        Joined {{ profile_user.created_at|date:"F Y" }}
+                    </p>
+
+                    {% if profile_user.bio %}
+                    <p class="lead mb-0">
+                        {{ profile_user.bio }}
+                    </p>
+                    {% else %}
+                    <p class="text-muted mb-0">
+                        {% if request.user == profile_user %}
+                        No bio added yet.
+                        {% else %}
+                        This user has not added a bio yet.
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+
+                {% if request.user == profile_user %}
+                <div class="col-md-auto">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Edit Profile
+                    </a>
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% if user != profile_user %}
+
+<section class="mb-5">
+    <div class="row g-4">
+
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{ profile_user.prompts.count }}">0</h2>
+                    <small class="text-muted">Prompts</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{ profile_user.total_views }}">0</h2>
+                    <small class="text-muted">Views</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold mb-0 statistics" data-goal="{{ profile_user.total_copies }}">0</h2>
+                    <small class="text-muted">Copies</small>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+{% endif %}
+
+
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">
+                {% if user != profile_user %}
+                Public
+                {% endif %}
+                Prompts</h3>
+            <p class="text-muted mb-0">
+                Prompts shared by {{ profile_user.username }}.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        {% for prompt in prompts %}
+        <div class="col-md-6 col-xl-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body d-flex flex-column">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-primary">
+                            {{ prompt.category.name }}
+                        </span>
+
+                        <small class="text-muted">
+                            {{ prompt.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+
+                    <h5 class="fw-bold">
+                        {{ prompt.title }}
+                    </h5>
+
+                    <p class="text-muted">
+                        {{ prompt.description|truncatechars:120 }}
+                    </p>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3 mt-auto ">
+
+                        <span class="badge text-bg-light">
+                            <i class="bi bi-eye me-1"></i>{{ prompt.views }}
+                        </span>
+
+                        <span class="badge text-bg-light">
+                            <i class="bi bi-clipboard me-1"></i>{{ prompt.copies }}
+                        </span>
+
+                        {% if request.user == profile_user %}
+                        <span
+                            class="badge {% if prompt.visibility == 'public' %} bg-success {% else %} bg-secondary {% endif %}">
+                            {{ prompt.visibility }}
+                        </span>
+                        {% endif %}
+
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+                    <a href="{% url 'prompt' prompt.id %}" class="btn btn-outline-primary w-100">
+                        View Prompt
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center bg-white border rounded-4 shadow-sm p-5">
+                <i class="bi bi-journal-x display-4 text-muted"></i>
+                <h4 class="fw-bold mt-3">
+
+                    No {% if user != profile_user %}
+                    public
+                    {% endif %} prompts yet
+
+
+                </h4>
+                <p class="text-muted mb-0">
+                    {% if user == profile_user %}
+                    You did not make any prompts yet.
+                    {% else %}
+                    {{ profile_user.username }} has not shared any public prompts.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    document.querySelectorAll(".statistics").forEach(statistic => {
+        startCount(statistic)
+    })
+</script>
+
+{% endblock %}

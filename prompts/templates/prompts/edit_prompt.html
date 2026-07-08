@@ -1,0 +1,109 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %} Edit Prompt {% endblock %}
+{% block main %}
+<div class="container py-5" style="max-width: 850px;">
+
+    <div class="mb-4">
+        <h1 class="fw-bold mb-2">Edit Prompt</h1>
+        <p class="text-muted">
+            Update your prompt's title, description, content, category, and visibility.
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+            <form method="post">
+                {% csrf_token %}
+
+                    <!-- Title -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Title
+                        </label>
+
+                        {{ form.title }}
+
+                        <div class="form-text">
+                            Choose a clear and descriptive title.
+                        </div>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        {{ form.description }}
+
+                        <div class="form-text">
+                            A short summary explaining what the prompt does.
+                        </div>
+
+                    </div>
+
+                    <!-- Category + Visibility -->
+                    <div class="row">
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Category
+                            </label>
+
+                            {{ form.category }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Visibility
+                            </label>
+
+                            {{ form.visibility }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Prompt Content
+                        </label>
+
+                        {{ form.content }}
+
+                        <div class="form-text">
+                            Write the complete prompt exactly as you want others to use it.
+                        </div>
+
+                    </div>
+
+                    
+
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'prompt' prompt.id %}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

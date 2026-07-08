@@ -1,0 +1,61 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %} {{category.name}} {% endblock %}
+
+
+
+{% block main %}
+
+<section class="mb-5">
+
+    <div class="bg-white border rounded-4 shadow-sm p-4 p-md-5">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <div>
+
+                <h1 class="fw-bold mb-2">
+
+                    {{ category.name }}
+
+                </h1>
+
+                <p class="text-muted mb-0">
+
+                    {{ prompts.count }} prompt{{ prompts.count|pluralize }}
+                    available in this category.
+
+                </p>
+
+            </div>
+
+            <a href="{% url 'browse' %}" class="btn btn-outline-primary">
+
+                <i class="bi bi-arrow-left me-2"></i>
+
+                Browse All
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- Prompts -->
+
+<section>
+
+    <div class="row g-4">
+
+        {% include "prompts/prompts.html" %}
+
+    </div>
+
+</section>
+
+
+{% endblock  %}

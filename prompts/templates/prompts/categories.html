@@ -1,0 +1,70 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %}Categories {% endblock %}
+
+
+
+{% block main %}
+
+<section class="mb-5">
+    <div class="bg-white border rounded-4 shadow-sm p-4 p-md-5">
+        <h1 class="fw-bold mb-2">Categories</h1>
+        <p class="text-muted mb-0">
+            Browse prompts by topic and discover useful AI workflows.
+        </p>
+    </div>
+</section>
+
+<section>
+    <div class="row g-4">
+
+        {% for category in categories %}
+
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <a href="{% url 'category' category.slug %}" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+
+                        <div class="mb-3">
+                            <i class="bi bi-folder2-open fs-1 text-primary"></i>
+                        </div>
+
+                        <h5 class="fw-bold mb-2">
+                            {{ category.name }}
+                        </h5>
+
+                        <p class="text-muted mb-3">
+                            Explore prompts related to {{ category.name }}.
+                        </p>
+
+                        <span class="badge text-bg-light">
+                            {{ category.prompts_count }} prompts
+                        </span>
+
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="text-center bg-white border rounded-4 shadow-sm p-5">
+                <i class="bi bi-folder-x display-4 text-muted"></i>
+
+                <h4 class="fw-bold mt-3">
+                    No categories yet
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Categories will appear here once they are added.
+                </p>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock %}

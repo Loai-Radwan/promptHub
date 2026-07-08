@@ -1,0 +1,82 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %}Register {% endblock %}
+
+<!-- {% block header %}{% endblock %} -->
+
+{% block main %}
+
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+
+    <div class="col-12 col-md-7 col-lg-5">
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus fs-1 text-primary"></i>
+                    <h3 class="fw-bold mt-2">Create account</h3>
+                    <p class="text-muted mb-0">Join PromptHub and start saving prompts</p>
+                </div>
+
+                <!-- Form -->
+                <form action="{% url 'register' %}" method="post">
+
+                    {% csrf_token %}
+
+
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control form-control-lg" placeholder="username" required value="{{form_content.username}}">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control form-control-lg" placeholder="you@example.com" required value="{{form_content.email}}">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control form-control-lg" placeholder="••••••••" required value="{{form_content.password}}">
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" name="cpassword" class="form-control form-control-lg" placeholder="••••••••" required value="{{form_content.cpassword}}">
+                    </div>
+
+
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        Create account
+                    </button>
+
+                </form>
+
+
+
+                <!-- Login link -->
+                <p class="text-center mt-4 mb-0">
+                    Already have an account?
+                    <a href="{% url 'login' %}" class="text-decoration-none fw-semibold">
+                        Login
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

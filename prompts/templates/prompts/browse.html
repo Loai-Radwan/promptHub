@@ -1,0 +1,71 @@
+{% extends "prompts/layout.html" %}
+
+{% block title %}Browse Prompts {% endblock%}
+
+
+{% block main %}
+
+<!--  Search  -->
+
+<section class="mb-5">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+            <h2 class="fw-bold mb-4">Browse Prompts</h2>
+
+            <form id="search">
+                <div class="row g-3">
+                    <div class="col-lg-7">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input type="text" class="form-control" name="q" placeholder="Search prompts..."
+                                value="{{request.GET.q}}" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <select class="form-select" name="category">
+                            <option selected value="">All Categories</option>
+
+                            {% for category in categories %}
+                            <option value="{{category.slug}}" {% if request.GET.category == category.slug|stringformat:"s" %}
+                                selected {% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <button class="btn btn-primary w-100">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!--  Prompts  -->
+
+<section>
+    <div class="row g-4">
+        {% include "prompts/prompts.html" %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+<!-- <script>
+    document.querySelector('input[name="q"]').addEventListener('input', event => {
+        console.log()
+        const search = event.target.value
+        fetch(`/browse?q=${search}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+    })
+
+</script> -->
+{% endblock %}
