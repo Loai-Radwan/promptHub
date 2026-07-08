@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django import forms
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 import re
 import os
 import markdown2
@@ -67,8 +69,9 @@ class EditProfileForm(forms.ModelForm):
         }
 
 # Create your views here.
+CACHE_TIME = 3000
 
-
+@cache_page(CACHE_TIME)
 def index(request):
     total_user = User.objects.count()
     total_prompts = Prompt.objects.count()
@@ -120,8 +123,18 @@ def create_prompt(request):
 
 
 def browse(request):
-    categories = Category.objects.all()
-    prompts = Prompt.objects.filter(visibility='public')
+    categories = cache.get("all_categories")
+
+    if categories is None:
+        categories = list(Category.objects.all())
+        cache.set("all_categories", categories, CACHE_TIME)
+
+    prompts = cache.get("all_prompts")
+
+    if prompts is None:
+        prompts = Prompt.objects.filter(visibility='public')
+        cache.set("all_prompts", prompts, CACHE_TIME)
+
 
     q = request.GET.get("q")
     if q:
@@ -131,7 +144,7 @@ def browse(request):
     if category:
         prompts = prompts.filter(category__slug=category)
 
-    paginator = Paginator(prompts, 10)
+    paginator = Paginator(prompts, 9)
     page_obj = paginator.get_page(request.GET.get("page"))
 
     return render(request, "prompts/browse.html", {
@@ -207,7 +220,7 @@ def edit_prompt(request, id):
         "form": form
     })
 
-
+@cache_page(CACHE_TIME)
 def categories(request):
     categories = Category.objects.all()
     for category in categories:
@@ -218,7 +231,7 @@ def categories(request):
         "categories": categories,
     })
 
-
+@cache_page(CACHE_TIME)
 def category(request, name):
     try:
         category = Category.objects.get(slug=name)
@@ -228,7 +241,7 @@ def category(request, name):
         })
 
     prompts = category.prompts.filter(visibility='public')
-    paginator = Paginator(prompts, 10)
+    paginator = Paginator(prompts, 9)
     page_obj = paginator.get_page(request.GET.get("page"))
 
     return render(request, "prompts/category.html", {
@@ -372,6 +385,7 @@ def login_view(request):
 
         messages.success(request, "You were logged in successfully")
         login(request, user)
+        # cache.clear()
         return redirect(reverse('dashboard'))
     return render(request, "prompts/login.html")
 
@@ -443,6 +457,7 @@ def register(request):
 
         messages.success(request, "You were registered successfully")
         login(request, user)
+        # cache.clear()
 
         return redirect(reverse('dashboard'))
 
@@ -451,6 +466,7 @@ def register(request):
 
 def logout_view(request):
     logout(request)
+    # cache.clear()
     return redirect(reverse("index"))
 
 
