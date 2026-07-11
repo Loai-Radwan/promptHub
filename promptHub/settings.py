@@ -80,7 +80,10 @@ DATABASES = {
         "USER": "postgres.xgkdychestyvteuckomy",
         "PASSWORD": "L1o2a3i4@prompthub",
         "HOST": "aws-0-eu-west-1.pooler.supabase.com",
-        "PORT": "6543",
+        "PORT": "5432",
+        "OPTIONS": {
+            "sslmode": "require",
+        },
     }
 }
 
