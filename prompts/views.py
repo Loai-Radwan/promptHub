@@ -71,7 +71,7 @@ class EditProfileForm(forms.ModelForm):
 # Create your views here.
 CACHE_TIME = 3000
 
-@cache_page(CACHE_TIME)
+
 def index(request):
     total_user = User.objects.count()
     total_prompts = Prompt.objects.count()
